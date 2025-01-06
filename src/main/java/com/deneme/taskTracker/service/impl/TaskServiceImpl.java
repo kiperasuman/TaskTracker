@@ -4,6 +4,9 @@ import com.deneme.taskTracker.dto.DtoTask;
 import com.deneme.taskTracker.dto.DtoTaskIU;
 import com.deneme.taskTracker.entity.Task;
 import com.deneme.taskTracker.enums.TaskStatus;
+import com.deneme.taskTracker.exceptions.BaseException;
+import com.deneme.taskTracker.exceptions.ErrorMessage;
+import com.deneme.taskTracker.exceptions.MessageType;
 import com.deneme.taskTracker.repository.ITaskRepository;
 import com.deneme.taskTracker.service.ITaskService;
 import org.springframework.beans.BeanUtils;
@@ -64,20 +67,16 @@ public class TaskServiceImpl implements ITaskService {
     public DtoTask updateTask(Long id, DtoTaskIU input) {
         Optional<Task> fromDb = taskRepository.findById(id);
         DtoTask dtoTask = new DtoTask();
-        try {
-            if (fromDb.isPresent()) {
-                Task task = fromDb.get();
-                task.setTitle(input.getTitle());
-                task.setStatus(input.getStatus());
-                task.setDescription(input.getDescription());
-                task.setUpdatedTime(new Date());
-                Task savedDb = taskRepository.save(task);
-                BeanUtils.copyProperties(savedDb, dtoTask);
-            }
-            return dtoTask;
-        }catch (Exception e){
-            System.out.println("İşlem başarısız: "+e.getMessage());
+        if (fromDb.isEmpty()) {
+          throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST,id.toString()));
         }
-        return null;
+        Task task = fromDb.get();
+        task.setTitle(input.getTitle());
+        task.setStatus(input.getStatus());
+        task.setDescription(input.getDescription());
+        task.setUpdatedTime(new Date());
+        Task savedDb = taskRepository.save(task);
+        BeanUtils.copyProperties(savedDb, dtoTask);
+        return dtoTask;
     }
 }
