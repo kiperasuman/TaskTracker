@@ -4,11 +4,13 @@ import com.deneme.taskTracker.dto.DtoTask;
 import com.deneme.taskTracker.dto.DtoTaskIU;
 import com.deneme.taskTracker.entity.Task;
 import com.deneme.taskTracker.enums.TaskStatus;
+import com.deneme.taskTracker.errorHandler.DataResult;
 import com.deneme.taskTracker.exceptions.BaseException;
 import com.deneme.taskTracker.exceptions.ErrorMessage;
 import com.deneme.taskTracker.exceptions.MessageType;
 import com.deneme.taskTracker.repository.ITaskRepository;
 import com.deneme.taskTracker.service.ITaskService;
+import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ public class TaskServiceImpl implements ITaskService {
     private ITaskRepository taskRepository;
 
     @Override
-    public DtoTask saveTask(DtoTaskIU input) {
+    public DataResult<DtoTask> saveTask(DtoTaskIU input) {
         DtoTask dto = new DtoTask();
         Task task = new Task();
         task.setCreatedTime(new Date());
@@ -34,11 +36,11 @@ public class TaskServiceImpl implements ITaskService {
         task.setStatus(input.getStatus());
         Task savedDb = taskRepository.save(task);
         BeanUtils.copyProperties(savedDb, dto);
-        return dto;
+        return new DataResult<>(dto,true);
     }
 
     @Override
-    public List<DtoTask> getAllTask() {
+    public DataResult<List<DtoTask>> getAllTask() {
         List<DtoTask> list = new ArrayList<>();
         List<Task> allTasks = taskRepository.findAll();
         for (Task task : allTasks) {
@@ -49,22 +51,23 @@ public class TaskServiceImpl implements ITaskService {
             dtoTask.setTitle(task.getTitle());
             list.add(dtoTask);
         }
-        return list;
+        return new DataResult<>(list,true);
     }
 
     @Override
-    public boolean deleteTask(Long id) {
+    public DataResult<?> deleteTask(Long id) {
         Optional<Task> fromDb = taskRepository.findById(id);
         if (fromDb.isPresent()) {
-            taskRepository.deleteById(id);
-            return true;
+             taskRepository.deleteById(id);
+             return new DataResult<>(id,true);
+
         }
-        return false;
+        return new DataResult<>(false,"Task silme işlemi başarısız.");
     }
 
 
     @Override
-    public DtoTask updateTask(Long id, DtoTaskIU input) {
+    public DataResult<DtoTask> updateTask(Long id, DtoTaskIU input) {
         Optional<Task> fromDb = taskRepository.findById(id);
         DtoTask dtoTask = new DtoTask();
         if (fromDb.isEmpty()) {
@@ -77,6 +80,6 @@ public class TaskServiceImpl implements ITaskService {
         task.setUpdatedTime(new Date());
         Task savedDb = taskRepository.save(task);
         BeanUtils.copyProperties(savedDb, dtoTask);
-        return dtoTask;
+        return new DataResult<>(dtoTask,true);
     }
 }

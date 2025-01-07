@@ -3,6 +3,7 @@ package com.deneme.taskTracker.controller.impl;
 import com.deneme.taskTracker.controller.ITaskController;
 import com.deneme.taskTracker.dto.DtoTask;
 import com.deneme.taskTracker.dto.DtoTaskIU;
+import com.deneme.taskTracker.errorHandler.DataResult;
 import com.deneme.taskTracker.service.ITaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +21,25 @@ public class TaskControllerImpl implements ITaskController {
 
     @PostMapping("/save")
     @Override
-    public DtoTask saveTask(@Valid @RequestBody DtoTaskIU input) {
+    public DataResult<DtoTask> saveTask(@Valid @RequestBody DtoTaskIU input) {
         return taskService.saveTask(input);
     }
 
     @GetMapping("/get")
     @Override
-    public List<DtoTask> getAllTask() {
+    public DataResult<List<DtoTask>> getAllTask() {
         return taskService.getAllTask();
     }
 
     @DeleteMapping("/delete/{id}")
     @Override
-    public boolean deleteTask(@PathVariable(name = "id") Long id) {
+    public DataResult<?> deleteTask(@PathVariable(name = "id") Long id) {
         return taskService.deleteTask(id);
     }
 
     @PutMapping("/update/{id}")
     @Override
-    public DtoTask updateTask(@PathVariable(name = "id") Long id, @RequestBody DtoTaskIU input) {
+    public DataResult<DtoTask> updateTask(@PathVariable(name = "id") Long id, @RequestBody DtoTaskIU input) {
         return taskService.updateTask(id,input);
     }
 }
