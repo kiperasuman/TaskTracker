@@ -1,9 +1,7 @@
 package com.deneme.taskTracker.service;
-
 import com.deneme.taskTracker.dto.DtoTask;
 import com.deneme.taskTracker.dto.DtoTaskIU;
 import com.deneme.taskTracker.errorHandler.DataResult;
-
 import java.util.List;
 
 public interface ITaskService {
@@ -12,5 +10,6 @@ public interface ITaskService {
     DataResult<List<DtoTask>> getAllTask();
     DataResult<?> deleteTask(Long id);
     DataResult<DtoTask> updateTask(Long id, DtoTaskIU input);
+    DataResult<List<DtoTask>> sortByTitleAsc();
 
 }

@@ -3,16 +3,15 @@ package com.deneme.taskTracker.service.impl;
 import com.deneme.taskTracker.dto.DtoTask;
 import com.deneme.taskTracker.dto.DtoTaskIU;
 import com.deneme.taskTracker.entity.Task;
-import com.deneme.taskTracker.enums.TaskStatus;
 import com.deneme.taskTracker.errorHandler.DataResult;
 import com.deneme.taskTracker.exceptions.BaseException;
 import com.deneme.taskTracker.exceptions.ErrorMessage;
 import com.deneme.taskTracker.exceptions.MessageType;
 import com.deneme.taskTracker.repository.ITaskRepository;
 import com.deneme.taskTracker.service.ITaskService;
-import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -82,4 +81,21 @@ public class TaskServiceImpl implements ITaskService {
         BeanUtils.copyProperties(savedDb, dtoTask);
         return new DataResult<>(dtoTask,true);
     }
+
+    @Override
+    public DataResult<List<DtoTask>> sortByTitleAsc() {
+        Sort sort = Sort.by(Sort.Direction.ASC, "title");
+        List<Task> sortByTitle = taskRepository.findAll(sort);
+        List<DtoTask> dtoTasks = new ArrayList<>();
+        for (Task task1 : sortByTitle){
+            DtoTask dtoTask = new DtoTask();
+            dtoTask.setId(task1.getId());
+            dtoTask.setTitle(task1.getTitle());
+            dtoTask.setDescription(task1.getDescription());
+            dtoTask.setStatus(task1.getStatus());
+            dtoTasks.add(dtoTask);
+        }
+        return new DataResult<>(dtoTasks,true);
+    }
+
 }

@@ -7,7 +7,6 @@ import com.deneme.taskTracker.errorHandler.DataResult;
 import com.deneme.taskTracker.service.ITaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,5 +40,11 @@ public class TaskControllerImpl implements ITaskController {
     @Override
     public DataResult<DtoTask> updateTask(@PathVariable(name = "id") Long id, @RequestBody DtoTaskIU input) {
         return taskService.updateTask(id,input);
+    }
+
+    @GetMapping("/get/sorted-task")
+    @Override
+    public DataResult<List<DtoTask>> sortByTitleAsc() {
+        return taskService.sortByTitleAsc();
     }
 }

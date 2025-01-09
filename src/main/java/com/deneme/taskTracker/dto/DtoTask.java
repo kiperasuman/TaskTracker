@@ -1,13 +1,6 @@
 package com.deneme.taskTracker.dto;
-
 import com.deneme.taskTracker.enums.TaskStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class DtoTask {
     private Long id;
     private String title;
@@ -44,5 +37,15 @@ public class DtoTask {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public DtoTask(Long id, String title, String description, TaskStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+    }
+
+    public DtoTask() {
     }
 }
